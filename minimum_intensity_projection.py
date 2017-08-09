@@ -17,12 +17,6 @@ def load_from_mat_post(dataset_path):
     else:
         return None
 
-def black_background(img):
-    for i in range(img.shape[0]):
-        for j in range(img.shape[1]):
-            if img[i,j] < 0:
-                img[i,j] = 0
-
 # load_from_mat_pre
 img1 = load_from_mat_pre("in.mat")
 img1 = np.transpose(img1)
@@ -37,14 +31,17 @@ img2 = np.min(img2,axis=2)
 img = np.subtract(img1,img2)
 
 # black_background
-final_img = black_background(img)
+for i in range(img.shape[0]):
+    for j in range(img.shape[1]):
+        if img[i,j] < 0:
+            img[i,j] = 0
 
 # download
 fig = plt.figure(frameon=False)
-fig.set_size_inches(final_img.shape[1]/10,final_img.shape[0]/10)
+fig.set_size_inches(img.shape[1]/10,img.shape[0]/10)
 ax = plt.Axes(fig, [0., 0., 1., 1.])
 ax.set_axis_off()
 fig.add_axes(ax)
 plt.gray()
-ax.imshow(final_img, aspect='normal')
+ax.imshow(img, aspect='normal')
 fig.savefig("out.png")

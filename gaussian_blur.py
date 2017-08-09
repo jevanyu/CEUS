@@ -36,12 +36,6 @@ def kernel_application(kernel, img):
     new_img = new_img[0:new_img.shape[0]-(int(kernel.shape[0])-1),0:new_img.shape[1]-(int(kernel.shape[0])-1)]
     return new_img
 
-def black_background(img):
-    for i in range(img.shape[0]):
-        for j in range(img.shape[1]):
-            if img[i,j] < 0:
-                img[i,j] = 0
-
 # load_from_mat
 img = load_from_mat("in.mat")
 img = np.transpose(img)
@@ -53,14 +47,17 @@ kernel = gaussian_kernel(31, 3)
 new_img = kernel_application(kernel, img)
 
 # black_background
-final_img = black_background(new_img)
+for i in range(new_img.shape[0]):
+    for j in range(new_img.shape[1]):
+        if new_img[i,j] < 0:
+            new_img[i,j] = 0
 
 # download
 fig = plt.figure(frameon=False)
-fig.set_size_inches(final_img.shape[1]/10,final_img.shape[0]/10)
+fig.set_size_inches(new_img.shape[1]/10,new_img.shape[0]/10)
 ax = plt.Axes(fig, [0., 0., 1., 1.])
 ax.set_axis_off()
 fig.add_axes(ax)
 plt.gray()
-ax.imshow(final_img, aspect='normal')
+ax.imshow(new_img, aspect='normal')
 fig.savefig("out.png")
